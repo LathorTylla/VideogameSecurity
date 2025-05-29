@@ -1,56 +1,101 @@
+#pragma once
 #include "Prerequisites.h"
-using namespace std;
-
-/*
-*  @brief This class implements the Caesar cipher encryption and decryption.
-* It shifts letters and numbers by a specified amount.
-* It handles both uppercase and lowercase letters, as well as digits.
-*/
-class CaesarEncryption {
+class
+CesarEncryption {
 public:
-  CaesarEncryption() = default;
-  ~CaesarEncryption() = default;
+	CesarEncryption() = default;
+	~CesarEncryption() = default;
 
-  /// Encrypts the input text using the Caesar cipher with a specified shift.
-  string EncryptionCaesar(const string& text, int shift) {
-    string result = "";
+	std::string
+		encode(const std::string& texto, int desplazamiento) {
+		std::string result = "";
 
-    // Ensure the shift is within the range of 0-25 for letters and 0-9 for digits
-    for (int i = 0; i < text.size(); i++) {
-      char posActual = text[i]; 
+		for (char c : texto) {
+			if (c >= 'A' && c <= 'Z') {
+				result += (char)(((c - 'A' + desplazamiento) % 26) + 'A');
+			}
+			else if (c >= 'a' && c <= 'z') {
+				result += (char)(((c - 'a' + desplazamiento) % 26) + 'a');
+			}
+			else if (c >= '0' && c <= '9') {
+				result += (char)(((c - '0' + desplazamiento) % 10) + '0');
+			}
+			else {
+				result += c;
+			}
+		}
 
-      //Ensure the shift is within the range of 0-25 for letters 
-      if (posActual >= 'a' && posActual <= 'z') { 
-        char newPos = ((posActual - 'a' + shift) % 26) + 'a';
-        result += newPos;
-      }
-      // Ensure the shift is within the range of 0-25 for uppercase letters
-      else if (posActual >= 'A' && posActual <= 'Z') {
-        char newPos = ((posActual - 'A' + shift) % 26) + 'A';
-        result += newPos;
-      }
+		return result;
+	}
 
-      // Ensure the shift is within the range of 0-9 for digits
-      else if (posActual >= '0' && posActual <= '9') { 
-        char newPos = ((posActual - '0' + shift) % 10) + '0';
-        result += newPos;
-      }
-      // If the character is not a letter or digit, keep it unchanged
-      else {
-        result += posActual;
-      }
-    }
-    return result;
-  }
+	std::string
+		decode(const std::string& texto, int desplazamiento) {
+		return encode(texto, 26 - (desplazamiento % 26));
+	}
 
-  /// Decrypts the input text using the Caesar cipher with a specified shift.
-  string decode(const string& text, int shift) {
-    return EncryptionCaesar(text, 26 - (shift % 26));
-  }
+	void
+	bruteForceAttack(const std::string& texto) {
+		std::cout << "\nIntentos de descifrado por fuerza bruta:\n";
+		for (int clave = 0; clave < 26; clave++) {
+			std::string intento = encode(texto, 26 - clave);
+			std::cout << "Clave " << clave << ": " << intento << std::endl;
+		}
+	}
 
-  void bruteForceAttack(const string& text) {
-    for (int i = 1; i < 26; i++) {
-      cout << "Shift " << i << ": " << decode(text, i) << endl;
-    }
-  }
+	int
+	evaluatePossibleKey(const std::string& texto) {
+		int frecuencias[26] = { 0 };
+
+		// Contar frecuencias de letras
+		for (char c : texto) {
+			if (c >= 'a' && c <= 'z') {
+				frecuencias[c - 'a']++;
+			}
+			else if (c >= 'A' && c <= 'Z') {
+				frecuencias[c - 'A']++;
+			}
+		}	
+
+		// Letras comunes en español (orden de frecuencia)
+		const char letrasEsp[] = { 'e', 'a', 'o', 's', 'r', 'n', 'i', 'd', 'l', 'c' };
+
+		// Buscar la letra más frecuente en el mensaje cifrado
+		int indiceMax = 0;
+		for (int i = 1; i < 26; ++i) {
+			if (frecuencias[i] > frecuencias[indiceMax]) {
+				indiceMax = i;
+			}
+		}
+
+		// Probar varias suposiciones de mapeo
+		int mejorClave = 0;
+		int mejorPuntaje = -1;
+
+		for (char letraRef : letrasEsp) {
+			int clave = (indiceMax - (letraRef - 'a') + 26) % 26;
+			int puntaje = 0;
+
+			// Descifrar con esa clave
+			std::string descifrado = encode(texto, 26 - clave);
+
+			// Palabras comunes simples
+			std::string comunes[] = { "el", "de", "la", "que", "en", "y", "los", "se" };
+
+			for (std::string palabra : comunes) {
+				if (descifrado.find(palabra) != std::string::npos) {
+					puntaje++;
+				}
+			}
+
+			if (puntaje > mejorPuntaje) {
+				mejorPuntaje = puntaje;
+				mejorClave = clave;
+			}
+		}
+
+		return mejorClave;
+	}
+
+private:
+
 };

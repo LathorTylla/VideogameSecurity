@@ -29,5 +29,8 @@
     <ClInclude Include="include\XOREncoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AsciiBinary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
