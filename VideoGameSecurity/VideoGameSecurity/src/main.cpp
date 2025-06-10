@@ -1,53 +1,25 @@
-#include "Prerequisites.h" 
-#include "XOREncoder.h"    
+#include "Prerequisites.h"
+#include "AsciiBinary.h"
 
-/**
- * @brief Main function demonstrating XOR encryption, decryption, and brute force attacks.
- * @return Exit code of the program.
- */
+/*
+* This program converts a string to its binary representation and vice versa.
+* It uses the AsciiBinary class to perform the conversions.
+*/
 int 
 main() {
-  XOREncoder XORencoder; // Create an instance of the XOR encoder
+	AsciiBinary AB;
 
-  // Original message and key for encryption
-  std::string mensaje = "Hola Mundo";
-  std::string clave = "clave";
+  std::string input = "Hello, World!";	// Example input string
+  std::string binary = AB.stringToBinary(input);	// Convert string to binary
+  std::cout << "Text to binary: " << binary << std::endl;	// Output the binary representation
+  std::string message = AB.binaryToString(binary);	// Convert binary back to string
+	std::cout << "Bimary to text: " << message << std::endl; // Output the original string
+  // Check if the conversion back to string is correct
+  if (input == message) {
+    std::cout << "The conversion is correct" << std::endl;	// Confirm the conversion is correct
+  } else {
+    std::cout << "The conversion is incorrect." << std::endl;	// Indicate an error in conversion
+  }
 
-  // Display the original message
-  std::cout << "Mensaje original: " << mensaje << std::endl;
-
-  std::cout << std::endl;
-  std::cout << std::endl;
-
-  // Encrypt the message using the XOR encoder
-  std::string cifrado = XORencoder.encode(mensaje, clave);
-  std::cout << "Texto cifrado (original): " << cifrado << std::endl;
-
-  // Decrypt the message using the same key
-  std::string descifrado = XORencoder.encode(cifrado, clave);
-
-  // Display the encrypted message in hexadecimal format
-  std::cout << "Texto cifrado (hex): ";
-  XORencoder.printHex(cifrado);
-  std::cout << std::endl;
-
-  // Display the decrypted message
-  std::cout << "Mensaje descifrado: " << descifrado << std::endl;
-
-  // Convert the encrypted message to a vector of bytes for brute force operations
-  std::vector<unsigned char> bytesCifrados(cifrado.begin(), cifrado.end());
-
-  // Perform brute force attack with single-byte keys
-  std::cout << "\n--- Fuerza bruta (1 byte) con filtro ---\n";
-  XORencoder.bruteForce_1Byte(bytesCifrados);
-
-  // Perform brute force attack with two-byte keys
-  std::cout << "\n--- Fuerza bruta (2 bytes) con filtro ---\n";
-  XORencoder.bruteForce_2Byte(bytesCifrados);
-
-  // Perform brute force attack using a dictionary of common keys
-  std::cout << "\n--- Fuerza bruta (diccionario de claves) ---\n";
-  XORencoder.bruteForceByDictionary(bytesCifrados);
-
-  return 0; // Return exit code
+	return 0;
 }
