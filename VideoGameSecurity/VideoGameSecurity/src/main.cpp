@@ -1,81 +1,16 @@
-#include <iostream>
-#include <string>
-#include "CesarEncryption.h"
+#include "Prerequisites.h"
+#include "DES.h"
 
-using namespace std;
-
-string 
-cifrarCesar(const string& texto, int rotacion) {
-  string resultado = "";
-
-  for (char c : texto) {
-    if (c >= 'A' && c <= 'Z') {
-      resultado += (char)(((c - 'A' + rotacion) % 26) + 'A');
-    }
-    else if (c >= 'a' && c <= 'z') {
-      resultado += (char)(((c - 'a' + rotacion) % 26) + 'a');
-    }
-    else if (c >= '0' && c <= '9') {
-      resultado += (char)(((c - '0' + rotacion) % 10) + '0');
-    }
-    else {
-      resultado += c;
-    }
-  }
-
-  return resultado;
-}
-
-string 
-descifrarCesar(const string& texto, int rotacion) {
-  return cifrarCesar(texto, 26 - (rotacion % 26));
-}
-
-void 
-ataqueFuerzaBruta(const string& cifrado) {
-  cout << "\nIntentos de descifrado por fuerza bruta:\n";
-  for (int clave = 1; clave < 26; ++clave) {
-    string intento = cifrarCesar(cifrado, 26 - clave);
-    cout << "Clave " << clave << ": " << intento << endl;
-  }
-}
-
-int 
-calcularClaveProbable(const string& texto) {
-  int frecuencias[26] = { 0 };
-
-  for (char c : texto) {
-    if (c >= 'a' && c <= 'z') {
-      frecuencias[c - 'a']++;
-    }
-    else if (c >= 'A' && c <= 'Z') {
-      frecuencias[c - 'A']++;
-    }
-  }
-
-  int indiceMax = 0;
-  for (int i = 1; i < 26; ++i) {
-    if (frecuencias[i] > frecuencias[indiceMax]) {
-      indiceMax = i;
-    }
-  }
-
-  int claveProbable = (indiceMax - ('e' - 'a') + 26) % 26;
-  return claveProbable;
-}
-
-
-// Cifrado: Fmirzirmhsw e pe gpewi hi wikyvmheh teve zmhisnyiksw. Ir iwxe qexivme, etvirhiver e gmjvev qirweniw c hiwgmjvev gshmksw sgypxsw
 int 
 main() {
-  string mensaje = "Bienvenidos a la clase de seguridad para videojuegos. En esta materia, aprenderan a cifrar mensajes y descifrar codigos ocultos";
-  int rotacion = 4;
+  std::bitset<64> plaintext("0001001000110100010101100111100010011010101111001101111011110001");
+  std::bitset<64> key("0001001100110100010101110111100110011011101111001101111111110001");
 
-  CesarEncryption cesar;
-  string cifrado = cesar.encode(mensaje, rotacion);
-  cout << "Texto cifrado: " << cifrado << endl;
-  string descifrado = cesar.decode(cifrado, rotacion);
-  cout << "Texto descifrado: " << descifrado << endl;
-  cout << "Posible Clave:" + std::to_string(cesar.evaluatePossibleKey(cifrado)) << endl;
+  std::string userKey = "$el_pepe$";
+
+  DES des(key);
+  auto ciphertext = des.encode(plaintext);
+  std::cout << "Cifrado: " << ciphertext << std::endl;
+
   return 0;
 }
