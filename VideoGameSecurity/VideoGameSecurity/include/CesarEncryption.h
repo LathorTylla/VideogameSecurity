@@ -1,100 +1,137 @@
-#pragma once
-#include "Prerequisites.h"
-class
+#include <iostream>
+#include <string>
+using namespace std;
+
+/**
+ * @brief Implements Caesar cipher encryption and decryption.
+ * @details This class provides methods to encode and decode text using the Caesar cipher,
+ *          shifting letters and digits by a specified amount. It supports both uppercase
+ *          and lowercase letters, as well as digits. Additional methods allow brute-force
+ *          attacks and key evaluation based on frequency analysis.
+ */
+class 
 CesarEncryption {
 public:
-	CesarEncryption() = default;
-	~CesarEncryption() = default;
+    /**
+     * @brief Default constructor.
+     * @summary Initializes a new instance of the CesarEncryption class.
+     */
+    CesarEncryption() = default;
 
-	std::string
-		encode(const std::string& texto, int desplazamiento) {
-		std::string result = "";
+    /**
+     * @brief Default destructor.
+     * @summary Cleans up resources used by the CesarEncryption instance.
+     */
+    ~CesarEncryption() = default;
 
-		for (char c : texto) {
-			if (c >= 'A' && c <= 'Z') {
-				result += (char)(((c - 'A' + desplazamiento) % 26) + 'A');
-			}
-			else if (c >= 'a' && c <= 'z') {
-				result += (char)(((c - 'a' + desplazamiento) % 26) + 'a');
-			}
-			else if (c >= '0' && c <= '9') {
-				result += (char)(((c - '0' + desplazamiento) % 10) + '0');
-			}
-			else {
-				result += c;
-			}
-		}
+    /**
+     * @brief Encodes a string using the Caesar cipher.
+     * @summary Shifts each letter and digit in the input string by the specified amount.
+     *          Non-alphanumeric characters are not modified.
+     * @param texto The input string to encode.
+     * @param desplazamiento The number of positions to shift each character.
+     * @return The encoded string.
+     */
+    std::string encode(const std::string& texto, int desplazamiento) {
+        std::string result = "";
 
-		return result;
-	}
+        for (char c : texto) {
+            if (c >= 'A' && c <= 'Z') {
+                result += (char)(((c - 'A' + desplazamiento) % 26) + 'A');
+            }
+            else if (c >= 'a' && c <= 'z') {
+                result += (char)(((c - 'a' + desplazamiento) % 26) + 'a');
+            }
+            else if (c >= '0' && c <= '9') {
+                result += (char)(((c - '0' + desplazamiento) % 10) + '0');
+            }
+            else {
+                result += c;
+            }
+        }
 
-	std::string
-		decode(const std::string& texto, int desplazamiento) {
-		return encode(texto, 26 - (desplazamiento % 26));
-	}
+        return result;
+    }
 
-	void
-	bruteForceAttack(const std::string& texto) {
-		std::cout << "\nIntentos de descifrado por fuerza bruta:\n";
-		for (int clave = 0; clave < 26; clave++) {
-			std::string intento = encode(texto, 26 - clave);
-			std::cout << "Clave " << clave << ": " << intento << std::endl;
-		}
-	}
+    /**
+     * @brief Decodes a string encoded with the Caesar cipher.
+     * @summary Reverses the Caesar cipher encoding by shifting characters in the opposite direction.
+     * @param texto The encoded string to decode.
+     * @param desplazamiento The number of positions originally used to shift each character.
+     * @return The decoded string.
+     */
+    std::string decode(const std::string& texto, int desplazamiento) {
+        return encode(texto, 26 - (desplazamiento % 26));
+    }
 
-	int
-	evaluatePossibleKey(const std::string& texto) {
-		int frecuencias[26] = { 0 };
+    /**
+     * @brief Attempts to decode a string using all possible Caesar cipher keys.
+     * @summary Performs a brute-force attack by trying all 26 possible shifts and outputs each result.
+     * @param texto The encoded string to attempt to decode.
+     * @return void
+     */
+    void 
+    bruteForceAttack(const std::string& texto) {
+        std::cout << "\nIntentos de descifrado por fuerza bruta:\n";
+        for (int clave = 0; clave < 26; clave++) {
+            std::string intento = encode(texto, 26 - clave);
+            std::cout << "Clave " << clave << ": " << intento << std::endl;
+        }
+    }
 
-		// Contar frecuencias de letras
-		for (char c : texto) {
-			if (c >= 'a' && c <= 'z') {
-				frecuencias[c - 'a']++;
-			}
-			else if (c >= 'A' && c <= 'Z') {
-				frecuencias[c - 'A']++;
-			}
-		}	
+    /**
+     * @brief Evaluates the most probable key for decoding a Caesar ciphered string.
+     * @summary Uses frequency analysis and common Spanish words to estimate the most likely key.
+     * @param texto The encoded string to analyze.
+     * @return The most probable key for decoding the string.
+     */
+    int 
+    evaluatePossibleKey(const std::string& texto) {
+        int frecuencias[26] = { 0 };
 
-		// Letras comunes en español (orden de frecuencia)
-		const char letrasEsp[] = { 'e', 'a', 'o', 's', 'r', 'n', 'i', 'd', 'l', 'c' };
+        for (char c : texto) {
+            if (c >= 'a' && c <= 'z') {
+                frecuencias[c - 'a']++;
+            }
+            else if (c >= 'A' && c <= 'Z') {
+                frecuencias[c - 'A']++;
+            }
+        }
 
-		// Buscar la letra más frecuente en el mensaje cifrado
-		int indiceMax = 0;
-		for (int i = 1; i < 26; ++i) {
-			if (frecuencias[i] > frecuencias[indiceMax]) {
-				indiceMax = i;
-			}
-		}
+        const char letrasEsp[] = { 'e', 'a', 'o', 's', 'r', 'n', 'i', 'd', 'l', 'c' };
 
-		// Probar varias suposiciones de mapeo
-		int mejorClave = 0;
-		int mejorPuntaje = -1;
+        int indiceMax = 0;
+        for (int i = 1; i < 26; ++i) {
+            if (frecuencias[i] > frecuencias[indiceMax]) {
+                indiceMax = i;
+            }
+        }
 
-		for (char letraRef : letrasEsp) {
-			int clave = (indiceMax - (letraRef - 'a') + 26) % 26;
-			int puntaje = 0;
+        int mejorClave = 0;
+        int mejorPuntaje = -1;
 
-			// Descifrar con esa clave
-			std::string descifrado = encode(texto, 26 - clave);
+        for (char letraRef : letrasEsp) {
+            int clave = (indiceMax - (letraRef - 'a') + 26) % 26;
+            int puntaje = 0;
 
-			// Palabras comunes simples
-			std::string comunes[] = { "el", "de", "la", "que", "en", "y", "los", "se" };
+            std::string descifrado = encode(texto, 26 - clave);
 
-			for (std::string palabra : comunes) {
-				if (descifrado.find(palabra) != std::string::npos) {
-					puntaje++;
-				}
-			}
+            std::string comunes[] = { "el", "de", "la", "que", "en", "y", "los", "se" };
 
-			if (puntaje > mejorPuntaje) {
-				mejorPuntaje = puntaje;
-				mejorClave = clave;
-			}
-		}
+            for (std::string palabra : comunes) {
+                if (descifrado.find(palabra) != std::string::npos) {
+                    puntaje++;
+                }
+            }
 
-		return mejorClave;
-	}
+            if (puntaje > mejorPuntaje) {
+                mejorPuntaje = puntaje;
+                mejorClave = clave;
+            }
+        }
+
+        return mejorClave;
+    }
 
 private:
 
