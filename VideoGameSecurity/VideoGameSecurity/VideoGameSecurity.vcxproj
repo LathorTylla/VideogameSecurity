@@ -134,7 +134,10 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AsciiBinary.h" />
     <ClInclude Include="include\CesarEncryption.h" />
+    <ClInclude Include="include\Prerequisites.h" />
+    <ClInclude Include="include\XOREncoder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
