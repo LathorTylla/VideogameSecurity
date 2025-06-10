@@ -1,5 +1,5 @@
-#pragma once // Ensures the header file is included only once during compilation
-#include "Prerequisites.h" // Includes necessary prerequisites
+#pragma once 
+#include "Prerequisites.h"
 
 /**
  * @brief Class for XOR-based encoding and decoding operations.
