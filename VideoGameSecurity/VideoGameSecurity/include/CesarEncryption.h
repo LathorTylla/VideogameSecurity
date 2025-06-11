@@ -32,7 +32,8 @@ public:
      * @param desplazamiento The number of positions to shift each character.
      * @return The encoded string.
      */
-    std::string encode(const std::string& texto, int desplazamiento) {
+    std::string 
+    encode(const std::string& texto, int desplazamiento) {
         std::string result = "";
 
         for (char c : texto) {
@@ -60,7 +61,8 @@ public:
      * @param desplazamiento The number of positions originally used to shift each character.
      * @return The decoded string.
      */
-    std::string decode(const std::string& texto, int desplazamiento) {
+    std::string 
+    decode(const std::string& texto, int desplazamiento) {
         return encode(texto, 26 - (desplazamiento % 26));
     }
 

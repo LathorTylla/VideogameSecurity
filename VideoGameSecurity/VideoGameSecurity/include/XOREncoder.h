@@ -17,7 +17,7 @@ public:
    * @return The encoded string.
    */
   std::string 
-    encode(const std::string& input, const std::string& key) {
+  encode(const std::string& input, const std::string& key) {
     std::string output = input;
      // Perform XOR operation for each character in the input
     for (int i = 0; i < input.size(); i++) {

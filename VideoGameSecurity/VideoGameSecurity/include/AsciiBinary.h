@@ -1,4 +1,4 @@
-#pragma onceAdd commentMore actions
+#pragma 
 #include "Prerequisites.h"
 
 /**
@@ -67,7 +67,7 @@ public:
 	 * @return The ASCII string corresponding to the binary input.
    */
 	std::string
-		binaryToString(const std::string& binaryInput) {
+	binaryToString(const std::string& binaryInput) {
 		std::istringstream iss(binaryInput);
     std::string result;// Initialize an empty result string
     std::string binary;// Temporary string to hold each binary value

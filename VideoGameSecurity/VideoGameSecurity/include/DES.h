@@ -22,8 +22,8 @@ public:
     /**
      * @brief Generates 16 subkeys from the main key for DES rounds.
      */
-  void 
-  generateSubkeys() {
+    void 
+    generateSubkeys() {
     for (int i = 0; i < 16; ++i) {
       // Generate a 48-bit subkey by shifting the main key
       std::bitset<48> subkey((key.to_ullong() >> i) & 0xFFFFFFFFFFFF);
@@ -36,8 +36,8 @@ public:
      * @param input The 64-bit block to permute.
      * @return The permuted 64-bit block.
      */
-  std::bitset<64> 
-  iPermutation(const std::bitset<64>& input) {
+    std::bitset<64> 
+    iPermutation(const std::bitset<64>& input) {
     std::bitset<64> output;
     for (int i = 0; i < 64; i++) {
       output[i] = input[i]; // Copy input bits directly (simplified permutation)
