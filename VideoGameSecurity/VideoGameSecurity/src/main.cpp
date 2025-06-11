@@ -63,7 +63,7 @@ main() {
     }
 
     // Display the decrypted text
-    std::cout << "Texto descifrado: " << phrase << std::endl;
+    std::cout << "Texto descifrado: " << output << std::endl;
 
     return 0; // Return exit code
 }
