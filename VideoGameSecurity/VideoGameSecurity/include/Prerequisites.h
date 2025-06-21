@@ -8,3 +8,4 @@
 #include <cctype>
 #include <algorithm>
 #include <bitset>
+#include <functional>
