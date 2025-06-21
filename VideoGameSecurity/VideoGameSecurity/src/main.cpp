@@ -3,7 +3,7 @@
 
 int
 main() {
-	std::string text = "Dream away";
+	std::string text = "Dream away, This is a test";
 	std::string key = "Lathor_Tylla18";
 
 	std::cout << "Texto original: " << text << std::endl;

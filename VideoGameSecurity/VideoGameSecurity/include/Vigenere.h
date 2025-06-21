@@ -9,7 +9,8 @@
  * based on the letters of a keyword. This class provides methods to encode and decode text using
  * a given key.
  */
-class Vigenere {
+class 
+Vigenere {
 public:
   /**
    * @brief Default constructor.
@@ -109,6 +110,75 @@ public:
       }
     }
     return result;
+  }
+
+  /*
+  * @brief Calculates the fitness score of a given text based on the frequency of common words.
+  * 
+  * @summary This function evaluates how well a decoded text matches common English words.
+  * @param text The text to be evaluated.
+  */
+  static double 
+  fitness(const std::string& text) {
+    static const std::vector<std::string> commonWords = {
+      "THE", "AND", "TO", "OF", "A", "IN", "IS", "IT", "THAT", "HE",
+      "WAS", "FOR", "ON", "ARE", "AS", "WITH", "HIS", "AT", "BY", "NEW",
+    };
+
+    double score = 0.0;
+    for (auto& word : commonWords) {
+      size_t pos = 0;
+      while ((pos = text.find(word, pos)) != std::string::npos) {
+        score += word.length(); // Increment score for each occurrence of a common word
+        pos += word.length();
+      }
+    }
+
+  }
+
+  /*
+  * @brief Breaks the Vigenere cipher encryption using a brute-force attack.
+  * 
+  * @summary This function attempts to find the best key for decrypting a given text by trying all possible keys up to a specified length.
+  * @param text The encrypted text to be decoded.
+  * @param maxKeyLenght The maximum length of the key to be tested.
+  * 
+  */
+  static std::string 
+  breakEncryption(const std::string& text, int maxKeyLenght) {
+    std::string bestKey;
+    std::string bestText;
+    std::string trailKey;
+    
+    double bestScore = std::numeric_limits<double>::infinity(); // Initialize to infinity for minimization
+
+    std::function<void(int, int)>dfs=[&](int pos, int maxLen) {
+      if (pos == maxLen) {
+        Vigenere v(trailKey);
+        std::string decodedText = v.decode(text);
+        double score = fitness(decodedText);
+        if (score < bestScore) {
+          bestScore = score;
+          bestKey = trailKey;
+          bestText = decodedText;
+        }
+        return;
+      }
+      for (char c = 'A'; c <= 'Z'; ++c) {
+        trailKey[pos] = c;
+        dfs(pos + 1, maxLen);
+      }
+    };
+
+    for (int len = 1; len <= maxKeyLenght; ++len) {
+      trailKey.assign(len, 'A');
+      dfs(0, len);
+    }
+
+    std::cout << "***BRUTE FORCE ATTACK VIGENERE ***\n";
+    std::cout << "Best key: " << bestKey << "\n";
+    std::cout << "Best decoded text: " << bestText << "\n";
+    return bestKey;
   }
 
 private:
