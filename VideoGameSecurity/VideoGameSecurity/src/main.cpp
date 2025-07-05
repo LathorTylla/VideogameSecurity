@@ -72,5 +72,20 @@ main() {
   std::cout << "Password 2: " << "LathorPassword@23" << "\n";
   std::cout << "Estimated Entropy 2: " << entropy2 << " | " << cryptoGen.passwordStrength("LathorPassword@23") << "\n";
 
+  /*
+   * Step 11) Generate high entropy passwords and display the top 3 results.
+   *          Show each password with its entropy value and strength rating.
+   */
+  std::cout << "\n******** High Entropy Passwords ********\n";
+  auto topPasswords = cryptoGen.generateHighEntropyPasswords(16, 20, 3);
+  for (size_t i = 0; i < topPasswords.size(); ++i) {
+    // Access the password and entropy directly from the struct
+    std::string password = topPasswords[i].password;
+    double entropyValue = topPasswords[i].entropy;
+
+    std::cout << "Password " << (i + 1) << ": " << password << "\n";
+    std::cout << "Entropy: " << entropyValue << " bits | Strength: "
+      << cryptoGen.passwordStrength(password) << "\n\n";
+  }
     return 0;
 }

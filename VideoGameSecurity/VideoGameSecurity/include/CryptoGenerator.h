@@ -396,6 +396,79 @@ public:
     else {
       return "Very Strong"; // Entropy >= 80 bits
     }
+
+
+  }
+
+  /**
+   * @brief Generates multiple passwords and returns the ones with highest entropy.
+   *
+   * @param length The desired length of the passwords.
+   * @param count The number of candidates to generate.
+   * @param topResults The number of top results to return.
+   * @return std::vector<PasswordWithEntropy> Vector of top passwords with their entropy values.
+   *
+   * @details
+   * Generates 'count' password candidates using all character sets to maximize entropy,
+   * then selects the 'topResults' passwords with the highest calculated entropy.
+   * Always includes uppercase, lowercase, digits, and symbols to maximize entropy.
+   */
+
+  struct 
+  PasswordWithEntropy {
+    std::string password;  // The generated password
+    double entropy;        // The entropy of the password
+  };
+
+  std::vector<PasswordWithEntropy>
+  generateHighEntropyPasswords(unsigned int length,
+                               unsigned int count = 20,
+                               unsigned int topResults = 3) {
+    // Create a vector to hold password candidates
+    std::vector<PasswordWithEntropy> candidates;
+
+    // Generate multiple password candidates
+    for (unsigned int i = 0; i < count; i++) {
+      // Generate a password with all character types to make it strong
+      std::string password = generatePassword(length, true, true, true, true);
+
+      // Calculate the entropy of this password
+      double entropy = estimateEntropy(password);
+
+      // Create a PasswordWithEntropy object
+      PasswordWithEntropy passwordData;
+      passwordData.password = password;
+      passwordData.entropy = entropy;
+
+      // Add this password and its entropy to our candidates list
+      candidates.push_back(passwordData);
+    }
+
+    // Find the passwords with the highest entropy
+    // Sort the candidates by entropy (highest to lowest)
+    for (unsigned int i = 0; i < candidates.size() - 1; i++) {
+      for (unsigned int j = 0; j < candidates.size() - i - 1; j++) {
+        // If this password has lower entropy than the next one, swap them
+        if (candidates[j].entropy < candidates[j + 1].entropy) {
+          PasswordWithEntropy temp = candidates[j];
+          candidates[j] = candidates[j + 1];
+          candidates[j + 1] = temp;
+        }
+      }
+    }
+
+    // Vector for top results
+    std::vector<PasswordWithEntropy> topPasswords;
+
+    // Get the top 'topResults' passwords (or fewer if we didn't generate that many)
+    unsigned int resultCount = (topResults < candidates.size()) ? topResults : candidates.size();
+
+    // Add the top passwords to results
+    for (unsigned int i = 0; i < resultCount; i++) {
+      topPasswords.push_back(candidates[i]);
+    }
+
+    return topPasswords;
   }
 
 private:
