@@ -1,20 +1,29 @@
 #include "Prerequisites.h"
-#include "Vigenere.h"
+#include "CryptoGenerator.h"
 
-int
+int 
 main() {
-	std::string text = "Dream away, This is a test";
-	std::string key = "Lathor_Tylla18";
+	CryptoGenerator cryptoGen;
+	cryptoGen.generatePassword(16); 
 
-	std::cout << "Texto original: " << text << std::endl;
-	std::cout << "Clave: " << key << std::endl;
+	auto randomBytes = cryptoGen.generateBytes(16);
+	std::cout << "Random Bytes (hex): " << cryptoGen.toHex(randomBytes) << std::endl;
 
-	Vigenere vigenere(key);
-	std::string encrypted = vigenere.encode(text);
-	std::cout << "Texto cifrado: " << encrypted << std::endl;
+	auto key128 = cryptoGen.generateKey(128);
+	std::cout << "Key 128-bit (hex): " << cryptoGen.toHex(key128) << std::endl;
 
-	std::string decrypted = vigenere.decode(encrypted);
-	std::cout << "Texto descifrado: " << decrypted << std::endl;
+	auto iv = cryptoGen.generateIV(16);
+	std::cout << "IV 128-bit (hex): " << cryptoGen.toHex(iv) << "\n";
+
+	auto salt = cryptoGen.generateSalt(16);
+	std::cout << "Salt (Base64): " << cryptoGen.toBase64(salt) << "\n";
+
+	
+	std::string base64String = cryptoGen.toBase64(salt); 
+	std::cout << "Base64: " << base64String << "\n";
+
+	auto fromBase64 = cryptoGen.fromBase64(base64String);
+	std::cout << "From Base64: " << cryptoGen.toHex(fromBase64) << "\n";
 
 
 	return 0;
