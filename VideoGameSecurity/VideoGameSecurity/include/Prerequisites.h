@@ -11,6 +11,14 @@
 #include <functional>
 #include <stdexcept>
 #include <random>
+#include <fstream> 
 
 #include <mutex>
 #include <array>
+
+struct 
+SensitiveData {
+  std::string user;
+  std::string password;
+  std::string others;
+};
