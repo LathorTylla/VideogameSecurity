@@ -17,7 +17,7 @@
 #include <array>
 
 struct 
-SensitiveData {
+ImportantInfo {
   std::string user;
   std::string password;
   std::string others;
