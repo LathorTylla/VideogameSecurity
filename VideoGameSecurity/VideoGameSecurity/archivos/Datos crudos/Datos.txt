@@ -1,0 +1,2 @@
+admin:pass123:correo@admin.com
+usuario1:clave456:telefono:555-0001
