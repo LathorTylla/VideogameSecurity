@@ -51,7 +51,7 @@ main() {
       std::string tipoCifrado;
 
       std::cout << "\n-- CIFRAR ARCHIVO --" << std::endl;
-      std::cout << "Nombre del archivo con extension (.txt): ";
+      std::cout << "Nombre del archivo con extension al final (.txt): ";
       std::getline(std::cin, nombreArchivo);
 
       // Verifica que el nombre no esté vacío
@@ -128,7 +128,7 @@ main() {
       std::string tipoCifrado;
 
       std::cout << "\n-- DESCIFRAR ARCHIVO --" << std::endl;
-      std::cout << "Nombre del archivo cifrado .txt: ";
+      std::cout << "Nombre del archivo cifrado con extension al final (.txt): ";
       std::getline(std::cin, nombreArchivo);
 
       // Construye ruta completa
