@@ -1,66 +1,95 @@
-# Videogame Security++
+# Sistema de Cifrado de Archivos
 
-Este repositorio contiene implementaciones educativas de distintos algoritmos y conceptos criptográficos utilizando el lenguaje C++. Tiene como objetivo comprender cómo funcionan los cifrados más importantes 
+Este proyecto implementa un sistema para cifrar y descifrar archivos de texto utilizando varios algoritmos de cifrado, como XOR, Caesar, ASCII-Binary, Vigenere y DES. Está diseñado para proteger datos sensibles, como usuarios, contraseñas y correos electrónicos, mediante la encriptación.
 
-## Contenido
+## Descripción
 
-### 1. **Cifrado César**
-Una de las técnicas de cifrado más antiguas. Implementamos:
-- Codificación con desplazamiento sobre letras, números y símbolos.
-- Descifrado por fuerza bruta.
-- Análisis de frecuencia para deducción automática de la clave.
-  
-**Archivo relevante:** `CesarEncryption.h`
+El sistema toma un archivo de texto (con formato `.txt`), lo cifra utilizando uno de los métodos de cifrado disponibles y guarda el archivo cifrado en una carpeta de salida. Los datos a cifrar deben estar en el formato:
 
-### 2. **Cifrado XOR**
-Una técnica simétrica moderna y sencilla basada en la operación lógica XOR:
-- Codificación con claves de uno o más caracteres.
-- Conversión entre texto y bytes en hexadecimal.
-- Ataques por fuerza bruta de 1 y 2 bytes.
-- Diccionario de claves comunes.
-- Validación de texto legible.
+usuario:contraseña:correo
 
-**Archivo relevante:** `XOREncoder.h`
+Por ejemplo:
 
-### 3. **Codificación ASCII y Binaria**
-Convertimos entre texto legible y su representación binaria:
-- Cada carácter ASCII.
-- Texto completo a binario separado por espacios.
-- Decodificación inversa desde binario a texto.
+admin:pass123:correo@admin.com
 
-**Archivo relevante:** `AsciiBinary.h`
+Los archivos de texto se deben almacenar en la carpeta **`bin/Datos crudos/`** y los archivos cifrados se guardarán en la carpeta **`bin/Datos cif/`**.
 
-### 4. **Cifrado DES (Data Encryption Standard)**
-Implementación simplificada del cifrado por bloques :
-- Permutaciones iniciales y finales.
-- Generación de subclaves.
-- Funciones de expansión, sustitución (S-boxes) y permutación (P-table).
-- Rondas de Feistel (16 rondas).
-- Conversión texto ↔ bits.
-- Codificación y decodificación completas.
+## Estructura de las Carpetas
 
-**Archivo relevante:** `DES.h`
+El proyecto requiere que las siguientes carpetas estén presentes en la raíz de tu proyecto:
 
----
+bin/
 
+├── Datos crudos/
 
-## Estructura del Repositorio
+└── Datos cif/
 
-/include
+- **`bin/Datos crudos/`**: Aquí debes colocar los archivos `.txt` que deseas cifrar (sin encriptar).
+- **`bin/Datos cif/`**: Aquí se guardarán los archivos cifrados resultantes.
 
-├── CesarEncryption.h
+### Creación de Carpetas
 
-├── XOREncoder.h
+Si las carpetas **`bin/Datos crudos/`** y **`bin/Datos cif/`** no existen, puedes crearlas manualmente o el programa lo hará automáticamente cuando ejecutes el programa por primera vez.
 
-├── AsciiBinary.h
+## Requisitos
 
-├── DES.h
+- C++ con soporte para las librerías estándar.
+- Compilador compatible con C++ 
 
-/source
+## Uso
 
-├──main.cpp
+1. **Configuración Inicial:**
 
-## Propósito Educativo
+   Asegúrate de que las carpetas `bin/Datos crudos/` y `bin/Datos cif/` existan antes de ejecutar el programa.
 
-Este proyecto no está orientado a la producción, sino al aprendizaje de cómo funcionan los algoritmos criptográficos desde cero. Se recomienda no usar estas implementaciones en sistemas reales de seguridad.
+   Si deseas cambiar las rutas de los archivos, puedes hacerlo modificando las siguientes líneas de código en `main.cpp`:
+
+   ```cpp
+   const std::string CARPETA_CRUDOS = "bin/Datos crudos/";
+   const std::string CARPETA_CIFRADOS = "bin/Datos cif/";
+Estas líneas especifican las rutas de las carpetas donde se encuentran los archivos de entrada y salida.
+
+### Cifrado:
+
+Ejecuta el programa.
+
+Selecciona 1 para cifrar un archivo.
+
+Ingresa el nombre del archivo .txt a cifrar (debe estar en bin/Datos crudos/).
+
+Selecciona el tipo de cifrado que deseas usar: XOR, Caesar, ASCII-Binary, Vigenere o DES.
+
+Ingresa la clave o parámetro necesario (por ejemplo, clave para XOR o desplazamiento para Caesar).
+
+El archivo cifrado será guardado en bin/Datos cif/ con el sufijo .txt.
+
+### Descifrado:
+
+Ejecuta el programa.
+
+Selecciona 2 para descifrar un archivo.
+
+Ingresa el nombre del archivo cifrado (debe estar en bin/Datos cif/).
+
+Selecciona el tipo de cifrado usado en el archivo.
+
+Ingresa la clave o parámetro necesario para descifrar el archivo (por ejemplo, clave de cifrado o desplazamiento).
+
+El archivo descifrado será guardado en bin/Datos crudos/.
+
+## Notas
+El sistema solo admite archivos .txt.
+
+Los archivos deben seguir el formato de registro usuario:contraseña:correo para ser correctamente cifrados y descifrados.
+
+### Recomendaciones para los Archivos de Entrada
+Los archivos de entrada deben contener registros en el siguiente formato:
+
+usuario:contraseña:correo
+
+Por ejemplo:
+
+admin:pass123:correo@admin.com
+
+El sistema tomará cada línea y la cifrará utilizando el algoritmo seleccionado.
 
