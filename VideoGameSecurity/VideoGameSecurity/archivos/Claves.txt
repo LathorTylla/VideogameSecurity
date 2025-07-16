@@ -1,0 +1,7 @@
+CesarEncrypt: 8
+
+XorEncrypt:Fmuril123
+
+DesEncrypt: Pass1234
+
+VigenereEncrypt: SECRETKEY
