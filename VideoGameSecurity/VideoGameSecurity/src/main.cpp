@@ -1,91 +1,104 @@
 #include "Prerequisites.h"
-#include "CryptoGenerator.h"
+#include "XOREncoder.h"
+#include "FileProtector.h"
 
-/*
- * Step 1) Create an instance of CryptoGenerator.
- *         This object provides all cryptographic utility functions used below.
- */
+void 
+mostrarMenu() {
+  std::cout << "\n======== MENU ========" << std::endl;
+  std::cout << "1. Cifrar archivo" << std::endl;
+  std::cout << "2. Descifrar archivo" << std::endl;
+  std::cout << "3. Salir" << std::endl;
+  std::cout << "=====================" << std::endl;
+  std::cout << "Opcion: ";
+}
+
 int 
 main() {
-  CryptoGenerator cryptoGen;
-  /*
-   * Step 2) Generate a random password of 16 characters.
-   *         By default, it uses uppercase, lowercase, and digits.
-   *         (The result is not printed here, but the password is generated.)
-   */
-  cryptoGen.generatePassword(16); 
-  /*
-   * Step 3) Generate 16 random bytes.
-   *         Print these bytes as a hexadecimal string.
-   */
-  auto randomBytes = cryptoGen.generateBytes(16);
-  std::cout << "Random Bytes (hex): " << cryptoGen.toHex(randomBytes) << std::endl;
-  /*
-   * Step 4) Generate a 128-bit (16 bytes) cryptographic key.
-   *         Print the key as a hexadecimal string.
-   */
-  auto key128 = cryptoGen.generateKey(128);
-  std::cout << "Key 128-bit (hex): " << cryptoGen.toHex(key128) << std::endl;
+  FileProtector protector;
+  std::string opcion;
 
-  /*
-   * Step 5) Generate a 128-bit (16 bytes) initialization vector (IV).
-   *         Print the IV as a hexadecimal string.
-   */
-  auto iv = cryptoGen.generateIV(16);
-  std::cout << "IV 128-bit (hex): " << cryptoGen.toHex(iv) << "\n";
+  //Carpeta de origen y destino
+  const std::string CARPETA_CRUDOS = "bin/Datos crudos/"; // Carpeta donde se guardan los archivos sin cifrar
+  const std::string CARPETA_CIFRADOS = "bin/Datos cif/";  // Carpeta donde se guardan los archivos cifrados
 
-  /*
-   * Step 6) Generate a 16-byte random salt.
-   *         Print the salt encoded in Base64 format.
-   */
-  auto salt = cryptoGen.generateSalt(16);
-  std::cout << "Salt (Base64): " << cryptoGen.toBase64(salt) << "\n";
+  std::cout << "\n*** SISTEMA DE CIFRADO XOR ***" << std::endl;
+  std::cout << "Carpeta origen: " << CARPETA_CRUDOS << std::endl;
+  std::cout << "Carpeta destino: " << CARPETA_CIFRADOS << std::endl;
 
-  /*
-   * Step 7) Encode the salt to Base64 again and print it.
-   *         (This is a repeat of the previous step for demonstration.)
-   */
-  std::string base64String = cryptoGen.toBase64(salt); 
-  std::cout << "Base64: " << base64String << "\n";
+  while (true) {
+    mostrarMenu();
+    std::getline(std::cin, opcion);
 
-  /*
-   * Step 8) Decode the Base64 string back to bytes.
-   *         Print the decoded bytes as a hexadecimal string.
-   */
-  auto fromBase64 = cryptoGen.fromBase64(base64String);
-  std::cout << "From Base64: " << cryptoGen.toHex(fromBase64) << "\n";
+    if (opcion == "1") {
+      // Cifrar archivo
+      std::string nombreArchivo;  // Nombre del archivo a cifrar
+      std::string nombreSalida;   // Nombre del archivo cifrado a guardar
+      std::string clave;          // Clave de cifrado
 
-  /*
-   * Step 9) Estimate the entropy (randomness) of the Base64 string.
-   *         Print a new random password and the estimated entropy and strength of the Base64 string.
-   */
-  std::string pwd = base64String;
-  auto entropy = cryptoGen.estimateEntropy(pwd);
-  std::cout << "Password 1: " << cryptoGen.generatePassword(16) << "\n";
-  std::cout << "Estimated Entropy 1: " << entropy << " | " << cryptoGen.passwordStrength(pwd) << "\n";
+      std::cout << "\n-- CIFRAR ARCHIVO --" << std::endl;
+      std::cout << "Nombre del archivo con extension (.txt): ";
+      std::getline(std::cin, nombreArchivo);  // Nombre del archivo a cifrar
 
-  /*
-   * Step 10) Estimate the entropy and strength of a custom password ("LathorPassword@234.").
-   *          Print the password, its estimated entropy, and its strength.
-   */
-  auto entropy2 = cryptoGen.estimateEntropy("LathorPassword@234.");
-  std::cout << "Password 2: " << "LathorPassword@23" << "\n";
-  std::cout << "Estimated Entropy 2: " << entropy2 << " | " << cryptoGen.passwordStrength("LathorPassword@23") << "\n";
+      // Verifica que el nombre no esté vacío
+      std::string rutaCompleta = CARPETA_CRUDOS + nombreArchivo;
 
-  /*
-   * Step 11) Generate high entropy passwords and display the top 3 results.
-   *          Show each password with its entropy value and strength rating.
-   */
-  std::cout << "\n******** High Entropy Passwords ********\n";
-  auto topPasswords = cryptoGen.generateHighEntropyPasswords(16, 20, 3);
-  for (size_t i = 0; i < topPasswords.size(); ++i) {
-    // Access the password and entropy directly from the struct
-    std::string password = topPasswords[i].password;
-    double entropyValue = topPasswords[i].entropy;
+      // Carga el archivo
+      if (protector.CargarArchivo(rutaCompleta)) {
+        std::cout << "Archivo cargado correctamente" << std::endl;
 
-    std::cout << "Password " << (i + 1) << ": " << password << "\n";
-    std::cout << "Entropy: " << entropyValue << " bits | Strength: "
-      << cryptoGen.passwordStrength(password) << "\n\n";
+        std::cout << "\nNombre del nuevo archivo cifrado (sin extension): ";
+        std::getline(std::cin, nombreSalida);
+
+        std::cout << "Clave de cifrado: ";
+        std::getline(std::cin, clave);
+
+        // Agrega .txt y carpeta destino
+        std::string rutaSalida = CARPETA_CIFRADOS + nombreSalida + ".txt";
+
+        // Cifra y guarda
+        if (protector.CifrarYGuardar(rutaSalida, clave)) {
+          std::cout << "\nArchivo cifrado guardado como: " << rutaSalida << std::endl;
+        }
+      }
+    }
+    else if (opcion == "2") {
+      // Descifrar archivo
+      std::string nombreArchivo;
+      std::string nombreSalida;
+      std::string clave;
+
+      std::cout << "\n-- DESCIFRAR ARCHIVO --" << std::endl;
+      std::cout << "Nombre del archivo cifrado .txt: ";
+      std::getline(std::cin, nombreArchivo);
+
+      // Construye ruta completa
+      std::string rutaCompleta = CARPETA_CIFRADOS + nombreArchivo;
+
+      std::cout << "Clave de descifrado: ";
+      std::getline(std::cin, clave);
+
+      // Descifra
+      if (protector.DescargarYDescifrar(rutaCompleta, clave)) {
+        std::cout << "Archivo descifrado correctamente" << std::endl;
+
+        std::cout << "\nNombre para guardar (sin extension): ";
+        std::getline(std::cin, nombreSalida);
+
+        // Guarda en carpeta de datos crudos
+        std::string rutaSalida = CARPETA_CRUDOS + nombreSalida + ".txt";
+        protector.GuardarEnArchivo(rutaSalida);
+
+        std::cout << "Archivo guardado como: " << rutaSalida << std::endl;
+      }
+    }
+    else if (opcion == "3") {
+      std::cout << "\nCerrando programa..." << std::endl;
+      break;
+    }
+    else {
+      std::cout << "\nOpcion no valida" << std::endl;
+    }
   }
-    return 0;
+
+  return 0;
 }
