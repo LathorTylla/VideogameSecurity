@@ -18,18 +18,18 @@ Los archivos de texto se deben almacenar en la carpeta **`bin/Datos crudos/`** y
 
 El proyecto requiere que las siguientes carpetas estén presentes en la raíz de tu proyecto:
 
-bin/
+archivos/
 
 ├── Datos crudos/
 
 └── Datos cif/
 
-- **`bin/Datos crudos/`**: Aquí debes colocar los archivos `.txt` que deseas cifrar (sin encriptar).
-- **`bin/Datos cif/`**: Aquí se guardarán los archivos cifrados resultantes.
+- **`archivos/Datos crudos/`**: Aquí debes colocar los archivos `.txt` que deseas cifrar (sin encriptar).
+- **`archivos/Datos cif/`**: Aquí se guardarán los archivos cifrados resultantes.
 
 ### Creación de Carpetas
 
-Si las carpetas **`bin/Datos crudos/`** y **`bin/Datos cif/`** no existen, puedes crearlas manualmente o el programa lo hará automáticamente cuando ejecutes el programa por primera vez.
+Si las carpetas **`archivos/Datos crudos/`** y **`archivos/Datos cif/`** no existen, puedes crearlas manualmente 
 
 ## Requisitos
 
@@ -40,7 +40,7 @@ Si las carpetas **`bin/Datos crudos/`** y **`bin/Datos cif/`** no existen, puede
 
 1. **Configuración Inicial:**
 
-   Asegúrate de que las carpetas `bin/Datos crudos/` y `bin/Datos cif/` existan antes de ejecutar el programa.
+   Asegúrate de que las carpetas `archivos/Datos crudos/` y `archivos/Datos cif/` existan antes de ejecutar el programa.
 
    Si deseas cambiar las rutas de los archivos, puedes hacerlo modificando las siguientes líneas de código en `main.cpp`:
 
