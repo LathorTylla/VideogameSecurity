@@ -9,7 +9,7 @@
 void
 mostrarMenu() {
   std::cout << "\n**********************************************" << std::endl;
-  std::cout << "      SISTEMA DE CIFRADO v2.0 " << std::endl;
+  std::cout << "      SISTEMA DE CIFRADO                        " << std::endl;
   std::cout << "**********************************************" << std::endl;
   std::cout << "1. Cifrar archivo                " << std::endl;
   std::cout << "2. Descifrar archivo             " << std::endl;
