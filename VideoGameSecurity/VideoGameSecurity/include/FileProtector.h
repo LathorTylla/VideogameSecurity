@@ -62,6 +62,15 @@ public:
                  const std::string& clave);
 
   /*
+  * @brief Cifra con DES y guarda en un archivo
+  * @param archivoSalida Nombre del archivo cifrado
+  * @param clave Clave para cifrar
+  * @return true si se guardo correctamente
+  */
+  bool
+  CifrarDES(const std::string& archivoSalida,
+            const std::string& clave);
+  /*
   * @brief Descifra un archivo XOR
   * @param archivoCifrado Ruta del archivo cifrado
   * @param clave Clave para descifrar
@@ -98,6 +107,17 @@ public:
   bool 
   DescifrarVigenere(const std::string& archivoCifrado,
                     const std::string& clave);
+
+  /*
+  * @brief Descifra un archivo DES
+  * @param archivoCifrado Ruta del archivo cifrado
+  * @param clave Clave para descifrar
+  * @return true si descifro correctamente
+  * 
+  */
+  bool
+  DescifrarDES(const std::string& archivoCifrado,
+               const std::string& clave);
   /*
   * @brief Guarda los registros actuales en un archivo
   * @param nombreArchivo Donde guardar los datos

@@ -182,6 +182,75 @@ FileProtector::CifrarVigenere(const std::string& archivoSalida,
 }
 
 bool
+FileProtector::CifrarDES(const std::string& archivoSalida,
+                         const std::string& clave) {
+  if (registros.empty()) {
+    std::cout << "ERROR: No hay registros para cifrar" << std::endl;
+    return false;
+  }
+
+  // Verifica que la clave tenga exactamente 8 caracteres
+  if (clave.length() != 8) {
+    std::cout << "ERROR: La clave DES debe tener exactamente 8 caracteres" << std::endl;
+    return false;
+  }
+
+  std::ofstream salida(archivoSalida);
+  if (!salida.is_open()) {
+    std::cout << "ERROR: No se pudo crear " << archivoSalida << std::endl;
+    return false;
+  }
+
+  // Convierte la clave a bitset de 64 bits
+  std::bitset<64> desClave;
+  for (int i = 0; i < 8; i++) {
+    unsigned char c = clave[i];
+    for (int j = 0; j < 8; j++) {
+      desClave[i * 8 + j] = (c >> (7 - j)) & 1;
+    }
+  }
+
+  // Crea el codificador DES
+  DES des(desClave);
+  int contador = 0;
+
+  for (size_t i = 0; i < registros.size(); i++) {
+    std::string lineaOriginal = registros[i].user + ":" +
+      registros[i].password + ":" +
+      registros[i].others;
+
+    // DES trabaja con bloques de 8 caracteres
+    std::string lineaCifrada = "";
+
+    // Procesa la linea en bloques de 8 caracteres
+    for (size_t j = 0; j < lineaOriginal.length(); j += 8) {
+      std::string bloque = lineaOriginal.substr(j, 8);
+
+      // Rellena con espacios si es necesario
+      while (bloque.length() < 8) {
+        bloque += ' ';
+      }
+
+      // Convierte el bloque a bitset
+      std::bitset<64> bloqueOriginal = des.stringToBitset64(bloque);
+
+      // Cifra el bloque
+      std::bitset<64> bloqueCifrado = des.encode(bloqueOriginal);
+
+      // Convierte de vuelta a string
+      lineaCifrada += des.bitset64ToString(bloqueCifrado);
+    }
+
+    salida << lineaCifrada << std::endl;
+    contador++;
+  }
+
+  salida.close();
+  std::cout << "\n[OK] Se cifraron " << contador << " registros con DES" << std::endl;
+  return true;
+}
+
+bool
 FileProtector::DescifrarXOR(const std::string& archivoCifrado,
                             const std::string& clave) {
   registros.clear();
@@ -226,7 +295,7 @@ FileProtector::DescifrarXOR(const std::string& archivoCifrado,
 
 bool
 FileProtector::DescifrarCaesar(const std::string& archivoCifrado,
-  int desplazamiento) {
+                               int desplazamiento) {
   registros.clear();
 
   std::ifstream entrada(archivoCifrado);
@@ -311,7 +380,7 @@ FileProtector::DescifrarASCIIBinary(const std::string& archivoCifrado) {
 
 bool
 FileProtector::DescifrarVigenere(const std::string& archivoCifrado,
-  const std::string& clave) {
+                                 const std::string& clave) {
   registros.clear();
 
   std::ifstream entrada(archivoCifrado);
@@ -349,6 +418,83 @@ FileProtector::DescifrarVigenere(const std::string& archivoCifrado,
 
   entrada.close();
   std::cout << "\n[OK] Se descifraron " << contador << " registros con Vigenere" << std::endl;
+  return true;
+}
+
+bool
+FileProtector::DescifrarDES(const std::string& archivoCifrado,
+                            const std::string& clave) {
+  registros.clear();
+
+  if (clave.length() != 8) {
+    std::cout << "ERROR: La clave DES debe tener exactamente 8 caracteres" << std::endl;
+    return false;
+  }
+
+  std::ifstream entrada(archivoCifrado);
+  if (!entrada.is_open()) {
+    std::cout << "ERROR: No se pudo abrir " << archivoCifrado << std::endl;
+    return false;
+  }
+
+  // Convierte la clave a bitset de 64 bits
+  std::bitset<64> desClave;
+  for (int i = 0; i < 8; i++) {
+    unsigned char c = clave[i];
+    for (int j = 0; j < 8; j++) {
+      desClave[i * 8 + j] = (c >> (7 - j)) & 1;
+    }
+  }
+
+  // Crea el codificador DES
+  DES des(desClave);
+  std::string lineaCifrada;
+  int contador = 0;
+
+  while (std::getline(entrada, lineaCifrada)) {
+    if (lineaCifrada.empty()) {
+      continue;
+    }
+
+    // Descifra la linea en bloques de 8 caracteres
+    std::string lineaOriginal = "";
+
+    for (size_t j = 0; j < lineaCifrada.length(); j += 8) {
+      std::string bloque = lineaCifrada.substr(j, 8);
+
+      // Convierte el bloque a bitset
+      std::bitset<64> bloqueCifrado = des.stringToBitset64(bloque);
+
+      // Descifra el bloque
+      std::bitset<64> bloqueOriginal = des.decode(bloqueCifrado);
+
+      // Convierte de vuelta a string
+      lineaOriginal += des.bitset64ToString(bloqueOriginal);
+    }
+
+    // Quita espacios al final si los hay
+    size_t endpos = lineaOriginal.find_last_not_of(" ");
+    if (endpos != std::string::npos) {
+      lineaOriginal = lineaOriginal.substr(0, endpos + 1);
+    }
+
+    // Extrae los campos
+    size_t pos1 = lineaOriginal.find(':');
+    size_t pos2 = lineaOriginal.find(':', pos1 + 1);
+
+    if (pos1 != std::string::npos && pos2 != std::string::npos) {
+      ImportantInfo dato;
+      dato.user = lineaOriginal.substr(0, pos1);
+      dato.password = lineaOriginal.substr(pos1 + 1, pos2 - pos1 - 1);
+      dato.others = lineaOriginal.substr(pos2 + 1);
+
+      registros.push_back(dato);
+      contador++;
+    }
+  }
+
+  entrada.close();
+  std::cout << "\n[OK] Se descifraron " << contador << " registros con DES" << std::endl;
   return true;
 }
 
