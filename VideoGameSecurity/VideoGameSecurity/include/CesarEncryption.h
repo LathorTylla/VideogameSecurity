@@ -1,7 +1,5 @@
-#include <iostream>
-#include <string>
-using namespace std;
-
+#pragma once 
+#include "Prerequisites.h"
 /**
  * @brief Implements Caesar cipher encryption and decryption.
  * @details This class provides methods to encode and decode text using the Caesar cipher,
@@ -12,17 +10,17 @@ using namespace std;
 class 
 CesarEncryption {
 public:
-    /**
-     * @brief Default constructor.
-     * @summary Initializes a new instance of the CesarEncryption class.
-     */
-    CesarEncryption() = default;
+  /**
+   * @brief Default constructor.
+   * @summary Initializes a new instance of the CesarEncryption class.
+   */
+  CesarEncryption() = default;
 
-    /**
-     * @brief Default destructor.
-     * @summary Cleans up resources used by the CesarEncryption instance.
-     */
-    ~CesarEncryption() = default;
+  /**
+   * @brief Default destructor.
+   * @summary Cleans up resources used by the CesarEncryption instance.
+   */
+  ~CesarEncryption() = default;
 
     /**
      * @brief Encodes a string using the Caesar cipher.
